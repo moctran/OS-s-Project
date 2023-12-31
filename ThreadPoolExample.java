@@ -1,5 +1,6 @@
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class ThreadPoolExample {
 
@@ -33,21 +34,27 @@ public class ThreadPoolExample {
             executorService.submit(() -> performTaskWithDelay(taskNumber));
         }
         executorService.shutdown();
+        try {
+            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
+
 
     private static void performTaskWithDelay(int taskNumber) {
         // Print information about the current thread before the delay
         System.out.println("Task " + taskNumber + " started by thread: " + Thread.currentThread().getName());
-    
+
         // Simulate a network call or I/O operation
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-    
+
         // Print information about the current thread after the delay
         System.out.println("Task " + taskNumber + " completed by thread: " + Thread.currentThread().getName());
     }
-    
+
 }
